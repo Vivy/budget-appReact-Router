@@ -1,11 +1,11 @@
-import { useLoaderData } from 'react-router-dom';
+import { Link, useLoaderData } from 'react-router-dom';
 import { toast } from 'react-toastify';
 import AddBudgetForm from '../component/addbudgetform';
 import AddExpenseForm from '../component/addexpenseform';
 import BudgetItem from '../component/budgetitem';
 import Intro from '../component/intro';
 import Table from '../component/table';
-import { createBExpense, createBudget, fetchData, waittt } from '../helpers';
+import { createExpense, createBudget, fetchData, waittt } from '../helpers';
 
 export const dashboardLoader = () => {
   const userName = fetchData('userName');
@@ -39,7 +39,7 @@ export const dashboardAction = async ({ request }) => {
 
   if (_action === 'createExpense') {
     try {
-      createBExpense({
+      createExpense({
         name: values.newExpense,
         amount: values.newExpenseAmount,
         budgetId: values.newExpenseBudget,
@@ -47,6 +47,18 @@ export const dashboardAction = async ({ request }) => {
       return toast.success(`Expense ${values.newExpense} created!`);
     } catch (e) {
       throw new Error('There was a problem creating your expense.');
+    }
+  }
+
+  if (_action === 'deleteExpense') {
+    try {
+      deleteExpense({
+        key: 'expenses',
+        id: values.expenseId,
+      });
+      return toast.success(`Expense  deleted!`);
+    } catch (e) {
+      throw new Error('There was a problem deleting your expense.');
     }
   }
 };
@@ -78,10 +90,16 @@ const Dashboard = () => {
                   <div className='grid-md'>
                     <h2>Recent Expenses</h2>
                     <Table
-                      expenses={expenses.sort(
-                        (a, b) => b.createAt - a.createAt
-                      )}
+                      expenses={expenses
+                        .sort((a, b) => b.createAt - a.createAt)
+                        .slice(0, 8)}
                     />
+                    {expenses.length > 8 && (
+                      <Link to='expenses' className='btn btn--dark'>
+                        {' '}
+                        View all expenses{' '}
+                      </Link>
+                    )}
                   </div>
                 )}
               </div>
