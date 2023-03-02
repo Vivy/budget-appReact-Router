@@ -10,6 +10,7 @@ import ExpensesPage, {
   expensesLoader,
 } from './pages/expensespage';
 import BudgetPage, { budgetAction, budgetLoader } from './pages/budgetpage';
+import { deleteBudget } from './action/deletebudget';
 
 const router = createBrowserRouter([
   {
