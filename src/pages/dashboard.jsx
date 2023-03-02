@@ -5,7 +5,13 @@ import AddExpenseForm from '../component/addexpenseform';
 import BudgetItem from '../component/budgetitem';
 import Intro from '../component/intro';
 import Table from '../component/table';
-import { createExpense, createBudget, fetchData, waittt } from '../helpers';
+import {
+  createExpense,
+  createBudget,
+  fetchData,
+  waittt,
+  deleteItem,
+} from '../helpers';
 
 export const dashboardLoader = () => {
   const userName = fetchData('userName');
@@ -52,7 +58,7 @@ export const dashboardAction = async ({ request }) => {
 
   if (_action === 'deleteExpense') {
     try {
-      deleteExpense({
+      deleteItem({
         key: 'expenses',
         id: values.expenseId,
       });
