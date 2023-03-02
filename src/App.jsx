@@ -1,7 +1,7 @@
 import { createBrowserRouter, RouterProvider } from 'react-router-dom';
 import { logoutAction } from './action/logout';
 import Main, { mainLoader } from './layouts/main';
-import Dashboard, { dashboardLoader } from './pages/dashboard';
+import Dashboard, { dashboardAction, dashboardLoader } from './pages/dashboard';
 import Error from './pages/error';
 import { ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
@@ -17,6 +17,7 @@ const router = createBrowserRouter([
         index: true,
         element: <Dashboard />,
         loader: dashboardLoader,
+        action: dashboardAction,
         errorElement: <Error />,
       },
       {
