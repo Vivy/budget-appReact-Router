@@ -2,16 +2,20 @@ import { useLoaderData } from 'react-router-dom';
 import { toast } from 'react-toastify';
 import AddBudgetForm from '../component/addbudgetform';
 import AddExpenseForm from '../component/addexpenseform';
+import BudgetItem from '../component/budgetitem';
 import Intro from '../component/intro';
-import { createBExpense, createBudget, fetchData } from '../helpers';
+import Table from '../component/table';
+import { createBExpense, createBudget, fetchData, waittt } from '../helpers';
 
 export const dashboardLoader = () => {
   const userName = fetchData('userName');
   const budgets = fetchData('budgets');
-  return { userName, budgets };
+  const expenses = fetchData('expenses');
+  return { userName, budgets, expenses };
 };
 
 export const dashboardAction = async ({ request }) => {
+  await waittt();
   const data = await request.formData();
   const { _action, ...values } = Object.fromEntries(data);
 
@@ -32,6 +36,7 @@ export const dashboardAction = async ({ request }) => {
       throw new Error('There was a problem creating your budget.');
     }
   }
+
   if (_action === 'createExpense') {
     try {
       createBExpense({
@@ -47,7 +52,7 @@ export const dashboardAction = async ({ request }) => {
 };
 
 const Dashboard = () => {
-  const { userName, budgets } = useLoaderData();
+  const { userName, budgets, expenses } = useLoaderData();
 
   return (
     <>
@@ -63,6 +68,22 @@ const Dashboard = () => {
                   <AddBudgetForm />
                   <AddExpenseForm budgets={budgets} />
                 </div>
+                <h2>Existing Budgets </h2>
+                <div className='budgets'>
+                  {budgets.map((budget) => (
+                    <BudgetItem key={budget.id} budget={budget} />
+                  ))}
+                </div>
+                {expenses && expenses.length > 0 && (
+                  <div className='grid-md'>
+                    <h2>Recent Expenses</h2>
+                    <Table
+                      expenses={expenses.sort(
+                        (a, b) => b.createAt - a.createAt
+                      )}
+                    />
+                  </div>
+                )}
               </div>
             ) : (
               <div className='grid-sm'>
